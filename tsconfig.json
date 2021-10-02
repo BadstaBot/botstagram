@@ -1,0 +1,42 @@
+{
+  "extends": "gts/tsconfig-google.json",
+  "compilerOptions": {
+    "sourceMap": false,
+    "resolveJsonModule": true,
+    "incremental": true,
+    "rootDir": ".",
+    "outDir": "../botstagram/build",
+    "baseUrl": "../botstagram/src",
+    "paths": {
+      "@src/*": [
+        "../src/*"
+      ],
+      "@base/*": [
+        "../*"
+      ],
+      "@util/*": [
+        "./src/util/*"
+      ],
+      "@assets/*": [
+        "./assets/*"
+      ]
+    },
+    "declaration": false,
+    "lib": [
+      "esnext",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "scripts/**/*.ts",
+    "../botstagram/index.d.ts",
+    "./build/assets/**/*.svg",
+    "./package.json"
+  ],
+  "exclude": [
+    "**/node_modules/*",
+    "../botstagram/node_modules"
+  ]
+}

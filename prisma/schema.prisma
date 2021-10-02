@@ -1,0 +1,141 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Blacklist {
+  id     String @id
+  reason String?
+
+  @@map("blacklist")
+}
+
+model GuildConfig {
+  gid                   String            @id @db.VarChar(255) @unique
+  modlog                String?           @db.VarChar(255)
+  punishlog             String?           @db.VarChar(255)
+  reportchannel         String?           @db.VarChar(255)
+  selfroles             String[]
+  suggestChannel     String?
+
+  hideMod               Boolean           @default(false)
+
+  raidmodeEnabled       Boolean           @default(false)
+  raidmodeOldVerifLevel String?           // just for caching lol
+  disabledCommands      String[]
+
+  massMentionThreshold  Int               @default(5)
+  massMentionEnabled    Boolean           @default(true)
+  massMentionAction     AutoModActionType @default(Ban)
+
+  wordFilter            String[]
+  wordFilterEnabled     Boolean           @default(true)
+
+  starboardEnabled      Boolean           @default(false)
+  starboardChannel      String?
+  starboardEmoji        String            @default("⭐")
+  starboardMin          Int               @default(5)
+
+  @@map("guild_config")
+}
+
+model Punishments {
+  case_id Int                   @id @default(autoincrement())
+  gid     String                @db.VarChar(255)
+  uid     String                @db.VarChar(255)
+  mod     String                @db.VarChar(255)
+  reason  String                @default("No Reason Given") @db.VarChar(255)
+  type    PunishmentType
+
+  @@map("punishments")
+}
+
+model Tags {
+  tid         Int       @id @default(autoincrement())
+  gid         String
+  createdBy   String    @map("created_by")
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6) @map("created_at")
+  title       String
+  content     String
+  usageCount  Int       @default(0) @map("usage_count")
+
+  @@map("tags")
+}
+
+model UserConfig {
+  uid       String   @id @db.VarChar(255)
+  createdAt DateTime @db.Timestamptz(6)
+  updatedAt DateTime @db.Timestamptz(6)
+  timezone  String?
+
+  @@map("user_config")
+}
+
+model ServerSuggestions {
+  sid          Int                    @id @default(autoincrement())    // suggestion id
+  gid          String                 // guild id
+  uid          String                 // user id
+  mid          String?                // message id (this has to be nullable cus of how i do it :^))
+  content      String
+  upvotes      Int                    @default(0)
+  downvotes    Int                    @default(0)
+  status       ServerSuggestionStatus @default(Pending)
+  reason       String?
+
+  @@map("serverSuggestions")
+}
+
+model Polls {
+ pid Int @id @default(autoincrement())
+ question String[]
+ uid String
+
+ @@map("polls")
+}
+
+
+model Economy {
+    id          Int    @id @default(autoincrement())
+    gid         String @unique
+    uid         String
+    handBalance Int @default(0) @map("handbalance")
+    bankBalance Int @default(0) @map("bankbalance")
+
+    @@map("economy")
+}
+
+model AfkUsers {
+    id            Int       @id @default(autoincrement())
+    uid           String
+    gid           String    @unique
+    reason        String?
+    since         DateTime @default(now()) @db.Timestamptz(6)
+    pingsReceived Int      @default(0) @map("pings_received")
+
+    @@map("afk_users")
+}
+
+enum PunishmentType {
+  Ban
+  Kick
+  Mute
+  SoftBan
+}
+
+enum AutoModActionType {
+  Ban
+  Kick
+  Mute
+  SoftBan
+}
+
+enum ServerSuggestionStatus {
+  Pending
+  Approved
+  Denied
+  Considered
+}
