@@ -59,7 +59,7 @@ async function handleContextCommand(client: BotClient, i: ContextMenuInteraction
         try {
             await cmd.func(client, i);
         } catch (e) {
-            client.emit('commandError', i, cmd, e);
+            client.emit('commandError', i, cmd, e as Error); // this is broken on the vps for some reason
         }
     } else if (i.targetType === 'MESSAGE') {
         const cmd = client.messageCommands.get(i.commandId);
@@ -67,7 +67,7 @@ async function handleContextCommand(client: BotClient, i: ContextMenuInteraction
         try {
             await cmd.func(client, i);
         } catch (e) {
-            client.emit('commandError', i, cmd, e);
+            client.emit('commandError', i, cmd, e as Error); // this is broken on the vps for some reason
         }
     }
 
@@ -114,7 +114,7 @@ async function runCmdChecks(client: BotClient, i: CommandInteraction | ContextMe
             return false;
         }
     } catch (e) {
-        await i.reply(e);
+        await i.reply((e as Error).message);
         return false;
     }
 
