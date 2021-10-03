@@ -14,13 +14,14 @@ model Blacklist {
   @@map("blacklist")
 }
 
+
 model GuildConfig {
   gid                   String            @id @db.VarChar(255) @unique
   modlog                String?           @db.VarChar(255)
   punishlog             String?           @db.VarChar(255)
   reportchannel         String?           @db.VarChar(255)
   selfroles             String[]
-  suggestChannel     String?
+  suggestChannel        String?
 
   hideMod               Boolean           @default(false)
 
@@ -118,6 +119,10 @@ model AfkUsers {
 
     @@map("afk_users")
 }
+
+
+
+
 
 enum PunishmentType {
   Ban
